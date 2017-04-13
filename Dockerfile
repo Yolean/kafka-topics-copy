@@ -1,7 +1,6 @@
-FROM debian:latest
+FROM confluentinc/cp-kafka:3.2.0
 
 # Source: ryane/kafkacat
-WORKDIR /build
 
 ENV BUILD_PACKAGES "build-essential git curl zlib1g-dev python"
 RUN apt-get update -y && \
@@ -10,10 +9,7 @@ RUN apt-get update -y && \
     cd kafkacat && \
     ./bootstrap.sh && \
     make install && \
-    cd .. && rm -rf kafkacat && \
-    AUTO_ADDED_PACKAGES=`apt-mark showauto` && \
-    apt-get remove --purge -y $BUILD_PACKAGES $AUTO_ADDED_PACKAGES && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    cd .. && rm -rf kafkacat
 
 COPY kafka-topics-copy.sh /scripts/kafka-topics-copy.sh
 
