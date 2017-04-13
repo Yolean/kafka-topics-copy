@@ -1,5 +1,8 @@
 # [NOT WELL TESTED YET / USE ONLY FOR POC PURPOSES]
 
+This solution below may work for text based topics, but has limitations with delimiters for keys and messages.
+Do not use this project in production until this enhancement is performed: https://github.com/simplesteph/kafka-topics-copy/issues/6
+
 # Kafka Topics Copy
 
 Copy a Kafka Topic within the same Kafka Cluster. Useful for reducing the number of partitions for a topic.
