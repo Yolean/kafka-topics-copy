@@ -1,3 +1,5 @@
+# [NOT WELL TESTED YET / USE ONLY FOR POC PURPOSES]
+
 # Kafka Topics Copy
 
 Copy a Kafka Topic within the same Kafka Cluster. Useful for reducing the number of partitions for a topic.
