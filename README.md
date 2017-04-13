@@ -3,7 +3,7 @@
 This solution below may work for text based topics, but has limitations with delimiters for keys and messages.
 Do not use this project in production until this enhancement is performed: https://github.com/simplesteph/kafka-topics-copy/issues/6
 
-# Kafka Topics Copy
+# [At your own risk] Kafka Topics Copy
 
 Copy a Kafka Topic within the same Kafka Cluster. Useful for reducing the number of partitions for a topic.
 It keeps the keys of records, therefore ordering for a specific key is still guaranteed, even though the number of partitions is different.
