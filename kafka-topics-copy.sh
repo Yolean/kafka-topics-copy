@@ -1,14 +1,20 @@
 #!/bin/bash
-echo "Describing source topic"
-kafka-topics --describe --topic $SOURCE_TOPIC --zookeeper $ZOOKEEPER
+set -e
 
-echo "Creating target topic if it doesn't exist yet"
-kafka-topics --create --topic $TARGET_TOPIC --zookeeper $ZOOKEEPER \
+echo "Describing source topic"
+./kafka-topics.sh --describe --topic $SOURCE_TOPIC --zookeeper $ZOOKEEPER
+
+echo "Creating target topic if not exists"
+./kafka-topics.sh --create --topic $SOURCE_TOPIC --zookeeper $ZOOKEEPER \
              --partitions $TARGET_PARTITIONS --replication-factor $TARGET_REPLICATION_FACTOR \
              --if-not-exists
 
+echo "Creating target topic (should bail if it exists)"
+./kafka-topics.sh --create --topic $TARGET_TOPIC --zookeeper $ZOOKEEPER \
+             --partitions $TARGET_PARTITIONS --replication-factor $TARGET_REPLICATION_FACTOR \
+
 echo "Describing target topic"
-kafka-topics --describe --topic $TARGET_TOPIC --zookeeper $ZOOKEEPER
+./kafka-topics.sh --describe --topic $TARGET_TOPIC --zookeeper $ZOOKEEPER
 
 # GROUP_ID_DEFAULT=topic-copy-$SOURCE_TOPIC-$TARGET_TOPIC
 # GROUP_ID=${GROUP_ID:-$GROUP_ID_DEFAULT}
