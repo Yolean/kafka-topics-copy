@@ -11,6 +11,8 @@ RUN apt-get update -y && \
     make install && \
     cd .. && rm -rf kafkacat
 
-COPY kafka-topics-copy.sh /scripts/kafka-topics-copy.sh
+WORKDIR /opt/kafka/bin/
 
-CMD ["/scripts/kafka-topics-copy.sh"]
+COPY kafka-topics-copy.sh kafka-topics-copy.sh
+
+ENTRYPOINT ["./kafka-topics-copy.sh"]
