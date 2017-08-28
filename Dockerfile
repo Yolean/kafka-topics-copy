@@ -1,4 +1,4 @@
-FROM confluentinc/cp-kafka:3.2.0
+FROM solsson/kafka-persistent:0.10.1.1
 
 # Source: ryane/kafkacat
 
