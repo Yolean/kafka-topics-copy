@@ -15,4 +15,8 @@ WORKDIR /opt/kafka/bin/
 
 COPY kafka-topics-copy.sh kafka-topics-copy.sh
 
+ENV TARGET_PARTITIONS 1
+ENV TARGET_REPLICATION_FACTOR 3
+ENV KEY_DELIMITER "~"
+
 ENTRYPOINT ["./kafka-topics-copy.sh"]
