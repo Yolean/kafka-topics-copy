@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.streams.StreamsConfig;
 
 import se.yolean.kafka.topicscopy.TopicsCopyOptions;
@@ -36,6 +37,8 @@ public class OptionsFromEnv implements TopicsCopyOptions {
     this.streamsProperties.put(StreamsConfig.APPLICATION_ID_CONFIG, "topicscopy__" + source + "__" + target +
         "__1");
     this.streamsProperties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka:9092");
+
+    this.streamsProperties.put(StreamsConfig.PRODUCER_PREFIX + ProducerConfig.ACKS_CONFIG, "all");
 
     this.exitAfterIdleSeconds = 10;
   }
