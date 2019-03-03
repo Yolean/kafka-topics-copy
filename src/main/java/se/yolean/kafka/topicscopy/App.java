@@ -46,7 +46,7 @@ public class App {
           // with only the shutdown hook and System.exit we'd see logs until PENDING_SHUTDOWN but with this wait we see NOT_RUNNING and "Streams client stopped completely"
           streams.close();
           try {
-            Thread.sleep(5);
+            Thread.sleep(1);
           } catch (InterruptedException e) {
             throw new RuntimeException("Interrupted while waiting for streams close", e);
           }

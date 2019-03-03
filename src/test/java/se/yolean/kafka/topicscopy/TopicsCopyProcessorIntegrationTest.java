@@ -52,4 +52,17 @@ class TopicsCopyProcessorIntegrationTest {
     assertEquals("v1", new String(copy1.value()));
   }
 
+  @Test
+  void testRecordTime() {
+    long produceTime = System.currentTimeMillis();
+    testDriver.pipeInput(recordFactory.create("source1", "k1".getBytes(), "v1".getBytes(), produceTime));
+    ByteArrayDeserializer b = new ByteArrayDeserializer();
+
+    ProducerRecord<byte[], byte[]> copy1 = testDriver.readOutput("target1", b, b);
+    assertNotNull(copy1);
+    assertEquals("k1", new String(copy1.key()));
+    assertEquals("v1", new String(copy1.value()));
+    assertEquals(produceTime, copy1.timestamp());
+  }
+
 }
