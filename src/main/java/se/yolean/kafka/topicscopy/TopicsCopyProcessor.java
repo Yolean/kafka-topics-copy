@@ -10,6 +10,8 @@ public class TopicsCopyProcessor implements Processor<byte[], byte[]> {
   private String source;
   private String target;
 
+  private long timeOfLastProcessedMessage;
+
   public TopicsCopyProcessor(String source, String target) {
     this.source = source;
     this.target = target;
@@ -33,12 +35,17 @@ public class TopicsCopyProcessor implements Processor<byte[], byte[]> {
 
   @Override
   public void process(byte[] key, byte[] value) {
+    this.timeOfLastProcessedMessage = System.currentTimeMillis();
     this.context.forward(key, value);
   }
 
   @Override
   public void close() {
     // nothing to do
+  }
+
+  public long getTimeOfLastProcessedMessage() {
+    return timeOfLastProcessedMessage;
   }
 
 }

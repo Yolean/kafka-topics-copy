@@ -27,3 +27,10 @@ docker run --net=host \
  - Use group.id to track the replication (blocked by https://github.com/edenhill/kafkacat/issues/88 as -G option is not compatible with -e option)
  - Copy topic configuration as well.
  - Make it compatible with secured kafka cluster
+
+# Development
+
+```bash
+alias compose='docker-compose -f build-contracts/docker-compose.yml'
+gradle jibDockerBuild -Djib.baseImageCache=build/jib-base-image-cache && compose up --force-recreate --no-deps copy1 test1
+```

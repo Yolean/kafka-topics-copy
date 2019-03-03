@@ -11,4 +11,6 @@ public interface TopicsCopyOptions {
 
   Properties getStreamsProperties();
 
+  int getExitAfterIdleSeconds();
+
 }

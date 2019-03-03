@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.kafka.streams.StreamsConfig;
+
 import se.yolean.kafka.topicscopy.TopicsCopyOptions;
 
 public class OptionsFromEnv implements TopicsCopyOptions {
@@ -17,6 +19,7 @@ public class OptionsFromEnv implements TopicsCopyOptions {
 
   private List<String> source;
   private String target;
+  private int exitAfterIdleSeconds;
 
   public OptionsFromEnv() {
     Map<String, String> env = System.getenv();
@@ -29,6 +32,12 @@ public class OptionsFromEnv implements TopicsCopyOptions {
     if (target == null || target.length() == 0) {
       throw new IllegalStateException("Missing target topic env " + ENV_NAME_TARGET_TOPIC);
     }
+
+    this.streamsProperties.put(StreamsConfig.APPLICATION_ID_CONFIG, "topicscopy__" + source + "__" + target +
+        "__1");
+    this.streamsProperties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka:9092");
+
+    this.exitAfterIdleSeconds = 10;
   }
 
   @Override
@@ -44,6 +53,11 @@ public class OptionsFromEnv implements TopicsCopyOptions {
   @Override
   public Properties getStreamsProperties() {
     return streamsProperties;
+  }
+
+  @Override
+  public int getExitAfterIdleSeconds() {
+    return exitAfterIdleSeconds;
   }
 
 }
