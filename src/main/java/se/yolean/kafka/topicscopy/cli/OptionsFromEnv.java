@@ -15,6 +15,7 @@ public class OptionsFromEnv implements TopicsCopyOptions {
 
   public static final String ENV_NAME_SOURCE_TOPICS = "SOURCE_TOPICS";
   public static final String ENV_NAME_TARGET_TOPIC = "TARGET_TOPIC";
+  public static final String ENV_NAME_KAFKA_BOOTSTRAP = "KAFKA_BOOTSTRAP";
 
   private final Properties streamsProperties = new Properties();
 
@@ -34,9 +35,14 @@ public class OptionsFromEnv implements TopicsCopyOptions {
       throw new IllegalStateException("Missing target topic env " + ENV_NAME_TARGET_TOPIC);
     }
 
+    String bootstrap = env.get(ENV_NAME_KAFKA_BOOTSTRAP);
+    if (bootstrap == null || bootstrap.length() == 0) {
+      bootstrap = "kafka:9092";
+    }
+
     this.streamsProperties.put(StreamsConfig.APPLICATION_ID_CONFIG, "topicscopy__" + source + "__" + target +
         "__1");
-    this.streamsProperties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka:9092");
+    this.streamsProperties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrap);
 
     this.streamsProperties.put(StreamsConfig.PRODUCER_PREFIX + ProducerConfig.ACKS_CONFIG, "all");
 
