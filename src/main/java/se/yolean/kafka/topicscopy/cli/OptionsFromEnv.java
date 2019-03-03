@@ -52,7 +52,7 @@ public class OptionsFromEnv implements TopicsCopyOptions {
 
     this.streamsProperties.put(StreamsConfig.PRODUCER_PREFIX + ProducerConfig.ACKS_CONFIG, "all");
 
-    this.exitAfterIdleSeconds = 10;
+    this.exitAfterIdleSeconds = 30;
   }
 
   @Override
