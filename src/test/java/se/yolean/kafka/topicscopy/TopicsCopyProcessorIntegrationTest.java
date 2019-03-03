@@ -54,7 +54,7 @@ class TopicsCopyProcessorIntegrationTest {
 
   @Test
   void testRecordTime() {
-    long produceTime = System.currentTimeMillis();
+    long produceTime = System.currentTimeMillis() - 60000;
     testDriver.pipeInput(recordFactory.create("source1", "k1".getBytes(), "v1".getBytes(), produceTime));
     ByteArrayDeserializer b = new ByteArrayDeserializer();
 
