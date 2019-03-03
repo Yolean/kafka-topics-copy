@@ -60,39 +60,6 @@ services:
     - |
       until kafkacat -b kafka:9092 -C -K '=' -t topic1 -e; do sleep 3; done
 
-  cache1:
-    depends_on:
-    - kafka
-    - topic1-create
-    image: yolean/kafka-keyvalue:dev
-    labels:
-    - com.yolean.build-target
-    ports:
-    - 19081:19081
-    command:
-    - --port
-    -   '19081'
-    - --streams-props
-    -   bootstrap.servers=kafka:9092
-    -   num.standby.replicas=0
-    - --hostname
-    -   cache1
-    - --application-id
-    -   kv-001
-    - --topic
-    -   topic1
-    - --onupdate
-    -   http://example-nodejs-client:8081/kafka-keyvalue/v1/updates
-    -   http://onupdate-logging:8080/
-    -   http://example-nodejs-client:8082/testpost
-    - --starttimeout
-    -   '10'
-
-  onupdate-logging:
-    image: solsson/httpstatus-random:access-logging@sha256:5330b2e84457e65ae9552acb00b26e8b7b2a878bcafb3baabddc13c1f840cd90
-    expose:
-    - '8080'
-
   smoketest:
     depends_on:
     - pixy
