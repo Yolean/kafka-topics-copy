@@ -53,6 +53,28 @@ class TopicsCopyProcessorIntegrationTest {
   }
 
   @Test
+  void testNullKey() {
+    testDriver.pipeInput(recordFactory.create("source1", null, "v1".getBytes()));
+    ByteArrayDeserializer b = new ByteArrayDeserializer();
+
+    ProducerRecord<byte[], byte[]> copy1 = testDriver.readOutput("target1", b, b);
+    assertNotNull(copy1);
+    assertEquals(null, copy1.key());
+    assertEquals("v1", new String(copy1.value()));
+  }
+
+  @Test
+  void testNullValue() {
+    testDriver.pipeInput(recordFactory.create("source1", "k1".getBytes(), (byte[]) null));
+    ByteArrayDeserializer b = new ByteArrayDeserializer();
+
+    ProducerRecord<byte[], byte[]> copy1 = testDriver.readOutput("target1", b, b);
+    assertNotNull(copy1);
+    assertEquals("k1", new String(copy1.key()));
+    assertEquals(null, copy1.value());
+  }
+
+  @Test
   void testRecordTime() {
     long produceTime = System.currentTimeMillis() - 60000;
     testDriver.pipeInput(recordFactory.create("source1", "k1".getBytes(), "v1".getBytes(), produceTime));
