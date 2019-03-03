@@ -6,31 +6,39 @@ import org.apache.kafka.streams.processor.ProcessorContext;
 
 public class TopicsCopyProcessor implements Processor<byte[], byte[]> {
 
-  public TopicsCopyProcessor(String string, String target) {
-    // TODO Auto-generated constructor stub
+  private ProcessorContext context;
+  private String source;
+  private String target;
+
+  public TopicsCopyProcessor(String source, String target) {
+    this.source = source;
+    this.target = target;
+  }
+
+  public Topology getTopology() {
+    Topology builder = new Topology();
+
+    builder
+      .addSource("Source", source)
+      .addProcessor("Process", () -> this, "Source")
+      .addSink("Sink", target, "Process");
+
+    return builder;
   }
 
   @Override
   public void init(ProcessorContext context) {
-    // TODO Auto-generated method stub
-
+    this.context = context;
   }
 
   @Override
   public void process(byte[] key, byte[] value) {
-    // TODO Auto-generated method stub
-
+    this.context.forward(key, value);
   }
 
   @Override
   public void close() {
-    // TODO Auto-generated method stub
-
-  }
-
-  public Topology getTopology() {
-    // TODO Auto-generated method stub
-    return null;
+    // nothing to do
   }
 
 }

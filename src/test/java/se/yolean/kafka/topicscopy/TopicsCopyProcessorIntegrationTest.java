@@ -1,10 +1,8 @@
 package se.yolean.kafka.topicscopy;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Properties;
-import java.util.SortedSet;
 
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
@@ -27,7 +25,7 @@ class TopicsCopyProcessorIntegrationTest {
 
   @BeforeEach
   public void setup() {
-    copy = new TopicsCopyProcessor();
+    copy = new TopicsCopyProcessor("source1", "target1");
 
     Properties config = new Properties();
     config.setProperty(StreamsConfig.APPLICATION_ID_CONFIG, "test-kafka-keyvalue");
