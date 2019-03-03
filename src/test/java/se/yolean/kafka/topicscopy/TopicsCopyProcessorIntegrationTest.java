@@ -1,6 +1,6 @@
 package se.yolean.kafka.topicscopy;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Properties;
 
@@ -46,8 +46,10 @@ class TopicsCopyProcessorIntegrationTest {
     testDriver.pipeInput(recordFactory.create("source1", "k1".getBytes(), "v1".getBytes()));
     ByteArrayDeserializer b = new ByteArrayDeserializer();
 
-    ProducerRecord<byte[], byte[]> copied = testDriver.readOutput("target1", b, b);
-    assertNotNull(copied);
+    ProducerRecord<byte[], byte[]> copy1 = testDriver.readOutput("target1", b, b);
+    assertNotNull(copy1);
+    assertEquals("k1", new String(copy1.key()));
+    assertEquals("v1", new String(copy1.value()));
   }
 
 }
