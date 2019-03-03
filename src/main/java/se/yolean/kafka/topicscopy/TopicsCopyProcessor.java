@@ -36,12 +36,6 @@ public class TopicsCopyProcessor implements Processor<byte[], byte[]> {
   @Override
   public void process(byte[] key, byte[] value) {
     this.timeOfLastProcessedMessage = System.currentTimeMillis();
-    try {
-      Thread.sleep(1000); // DUMMY wait to test timestamp handling
-    } catch (InterruptedException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
     this.context.forward(key, value);
   }
 
