@@ -22,10 +22,21 @@ class OptionsFromCliArgsTest {
   @Test
   void testMore() {
     TopicsCopyOptions options = new OptionsFromCliArgs(
-        "--bootstrap-servers kafka:9092 --application-id test --exit-after-idle-seconds 5 --input-topics t1 --output-topic t2".split("\\s+"));
+        "--bootstrap-servers kafka:9092 --application-id test --exit-idle 5 --input-topics t1 --output-topic t2".split("\\s+"));
     assertEquals("kafka:9092", options.getBootstrapServers());
     assertEquals("test", options.getApplicationId());
     assertEquals(5, options.getExitAfterIdleSeconds());
+  }
+
+  @Test
+  void testNoApplicationId() {
+    try {
+      new OptionsFromCliArgs(
+          "--bootstrap-servers kafka:9092 --input-topics t1 --output-topic t2".split("\\s+"));
+      fail("Should, according to http://jopt-simple.github.io/jopt-simple/examples.html, have thrown");
+    } catch (RuntimeException e) {
+      assertEquals("Missing required option(s) [application-id]", e.getMessage());
+    }
   }
 
 }
