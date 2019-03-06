@@ -11,7 +11,7 @@ public class Main {
   private static final Logger logger = LogManager.getLogger(Main.class);
 
   public static void main(String[] args) {
-    TopicsCopyOptions options = new OptionsFromEnv();
+    TopicsCopyOptions options = new OptionsFromCliArgs(args);
 
     App app = new App(options);
 

@@ -5,11 +5,15 @@ import java.util.Properties;
 
 public interface TopicsCopyOptions {
 
-  List<String> getSource();
+  String getApplicationId();
 
-  String getTarget();
+  String getBootstrapServers();
 
-  Properties getStreamsProperties();
+  List<String> getInput();
+
+  String getOutput();
+
+  Properties getCustomProperties();
 
   int getExitAfterIdleSeconds();
 

@@ -1,6 +1,10 @@
 package se.yolean.kafka.topicscopy;
 
+import java.util.Properties;
+
+import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,17 +15,30 @@ public class App {
 
   private ShutdownHook shutdown;
 
+  private void updateStreamsProperties(TopicsCopyOptions options, Properties props) {
+
+    props.put(StreamsConfig.APPLICATION_ID_CONFIG, options.getApplicationId());
+
+    props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, options.getBootstrapServers());
+
+    props.put(StreamsConfig.PRODUCER_PREFIX + ProducerConfig.ACKS_CONFIG, "all");
+
+  }
+
   public App(TopicsCopyOptions options) {
     logger.info("App started with options {}", options);
 
-    TopicsCopyProcessor processor = new TopicsCopyProcessor(options.getSource().get(0), options.getTarget());
+    Properties properties = options.getCustomProperties();
+    updateStreamsProperties(options, properties);
+
+    TopicsCopyProcessor processor = new TopicsCopyProcessor(options.getInput().get(0), options.getOutput());
     logger.info("Processor created");
 
     Topology topology = processor.getTopology();
     logger.info("Topology created, starting Streams using {} custom props",
-        options.getStreamsProperties().size());
+        properties.size());
 
-    final KafkaStreams streams = new KafkaStreams(topology, options.getStreamsProperties());
+    final KafkaStreams streams = new KafkaStreams(topology, properties);
     logger.info("Streams application configured", streams);
 
     streams.start();
