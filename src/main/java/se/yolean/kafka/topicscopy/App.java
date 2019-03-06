@@ -2,6 +2,7 @@ package se.yolean.kafka.topicscopy;
 
 import java.util.Properties;
 
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsConfig;
@@ -22,6 +23,8 @@ public class App {
     props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, options.getBootstrapServers());
 
     props.put(StreamsConfig.PRODUCER_PREFIX + ProducerConfig.ACKS_CONFIG, "all");
+
+    props.put(StreamsConfig.CONSUMER_PREFIX + ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, options.getAutoOffsetReset());
 
   }
 

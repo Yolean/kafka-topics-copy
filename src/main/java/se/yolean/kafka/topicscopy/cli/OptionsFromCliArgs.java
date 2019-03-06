@@ -27,6 +27,8 @@ public class OptionsFromCliArgs implements TopicsCopyOptions {
 
   private ArgumentAcceptingOptionSpec<Integer> exitAfterIdleSecondsOption;
 
+  private ArgumentAcceptingOptionSpec<String> autoOffsetReset;
+
   public OptionsFromCliArgs(String[] args) {
     try {
       parseArguments(args);
@@ -63,11 +65,16 @@ public class OptionsFromCliArgs implements TopicsCopyOptions {
         .withValuesSeparatedBy(',')
         .describedAs("list")
         .required();
+    autoOffsetReset = optionParser.accepts("auto-offset-reset", "What to do if the application ID lacks an offset for any source topic")
+        .withRequiredArg()
+        .ofType(String.class)
+        .describedAs("type")
+        .defaultsTo("none");
     exitAfterIdleSecondsOption = optionParser.accepts("exit-after-idle-seconds", "Exit the application if no message has been processed within this many seconds")
         .withRequiredArg()
         .ofType(Integer.class)
         .defaultsTo(0)
-        .describedAs("exitidle");
+        .describedAs("seconds");
 
     //executeOption = optionParser.accepts("execute", "Execute the command.");
     //dryRunOption = optionParser.accepts("dry-run", "Display the actions that would be performed without executing the reset commands.");
@@ -122,6 +129,11 @@ public class OptionsFromCliArgs implements TopicsCopyOptions {
   @Override
   public Properties getCustomProperties() {
     return new Properties();
+  }
+
+  @Override
+  public String getAutoOffsetReset() {
+    return options.valueOf(autoOffsetReset);
   }
 
 }

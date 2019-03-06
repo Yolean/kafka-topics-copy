@@ -17,4 +17,6 @@ public interface TopicsCopyOptions {
 
   int getExitAfterIdleSeconds();
 
+  String getAutoOffsetReset();
+
 }
