@@ -21,9 +21,6 @@ services:
     - --override
     -   log.dirs=/var/lib/kafka/data/topics
     - --override
-    # Shouldn't be needed for streams, but currently for the test container(s) to produce data
-    -   auto.create.topics.enable=true
-    - --override
     -   default.replication.factor=1
     - --override
     -   min.insync.replicas=1
@@ -41,6 +38,43 @@ services:
     ports:
     - 19092:19092
 
+  destination-zookeeper:
+    image: solsson/kafka:2.1.1@sha256:8bc8242c649c395ab79d76cc83b1052e63b4efea7f83547bf11eb3ef5ea6f8e1
+    entrypoint: ./bin/zookeeper-server-start.sh
+    command:
+    - ./config/zookeeper.properties
+
+  destination-kafka:
+    image: solsson/kafka:2.1.1@sha256:8bc8242c649c395ab79d76cc83b1052e63b4efea7f83547bf11eb3ef5ea6f8e1
+    links:
+    - destination-zookeeper
+    entrypoint:
+    - ./bin/kafka-server-start.sh
+    - ./config/server.properties
+    - --override
+    -   zookeeper.connect=destination-zookeeper:2181
+    - --override
+    -   log.retention.hours=-1
+    - --override
+    -   log.dirs=/var/lib/kafka/data/topics
+    - --override
+    -   default.replication.factor=1
+    - --override
+    -   min.insync.replicas=1
+    - --override
+    -   offsets.retention.minutes=10080
+    # For access from dev environment
+    - --override
+    -   listeners=OUTSIDE://:19192,PLAINTEXT://:9092
+    - --override
+    -   advertised.listeners=OUTSIDE://localhost:19192,PLAINTEXT://:9092
+    - --override
+    -   listener.security.protocol.map=PLAINTEXT:PLAINTEXT,OUTSIDE:PLAINTEXT
+    - --override
+    -   inter.broker.listener.name=PLAINTEXT
+    ports:
+    - 19192:19192
+
   pixy:
     depends_on:
     - kafka
@@ -51,10 +85,47 @@ services:
     - -tcpAddr
     -  0.0.0.0:19090
 
+  topic1-create:
+    image: solsson/kafka:2.1.1@sha256:8bc8242c649c395ab79d76cc83b1052e63b4efea7f83547bf11eb3ef5ea6f8e1
+    depends_on:
+    - kafka
+    entrypoint:
+    - ./bin/kafka-topics.sh
+    command:
+    - --zookeeper
+    -   zookeeper:2181
+    - --topic
+    -   topic1
+    - --create
+    - --if-not-exists
+    - --partitions
+    -   '3'
+    - --replication-factor
+    -   '1'
+
+  destination-topic2-create:
+    image: solsson/kafka:2.1.1@sha256:8bc8242c649c395ab79d76cc83b1052e63b4efea7f83547bf11eb3ef5ea6f8e1
+    depends_on:
+    - destination-kafka
+    entrypoint:
+    - ./bin/kafka-topics.sh
+    command:
+    - --zookeeper
+    -   destination-zookeeper:2181
+    - --topic
+    -   topic2
+    - --create
+    - --if-not-exists
+    - --partitions
+    -   '3'
+    - --replication-factor
+    -   '1'
+
   copy1:
     image: yolean/kafka-topics-copy:dev
     depends_on:
     - kafka
+    - destination-kafka
     labels:
     - com.yolean.build-target
     environment:

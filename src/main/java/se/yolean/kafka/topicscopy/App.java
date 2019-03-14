@@ -20,7 +20,9 @@ public class App {
 
     props.put(StreamsConfig.APPLICATION_ID_CONFIG, options.getApplicationId());
 
-    props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, options.getBootstrapServers());
+    //props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, options.getBootstrapServers());
+    props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:19192");
+    props.put(StreamsConfig.CONSUMER_PREFIX + ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:19092");
 
     props.put(StreamsConfig.PRODUCER_PREFIX + ProducerConfig.ACKS_CONFIG, "all");
 
