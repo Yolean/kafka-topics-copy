@@ -38,21 +38,21 @@ services:
     ports:
     - 19092:19092
 
-  destination-zookeeper:
+  source-zookeeper:
     image: solsson/kafka:2.1.1@sha256:8bc8242c649c395ab79d76cc83b1052e63b4efea7f83547bf11eb3ef5ea6f8e1
     entrypoint: ./bin/zookeeper-server-start.sh
     command:
     - ./config/zookeeper.properties
 
-  destination-kafka:
+  source-kafka:
     image: solsson/kafka:2.1.1@sha256:8bc8242c649c395ab79d76cc83b1052e63b4efea7f83547bf11eb3ef5ea6f8e1
     links:
-    - destination-zookeeper
+    - source-zookeeper
     entrypoint:
     - ./bin/kafka-server-start.sh
     - ./config/server.properties
     - --override
-    -   zookeeper.connect=destination-zookeeper:2181
+    -   zookeeper.connect=source-zookeeper:2181
     - --override
     -   log.retention.hours=-1
     - --override
@@ -85,7 +85,7 @@ services:
     - -tcpAddr
     -  0.0.0.0:19090
 
-  topic1-create:
+  topic2-create:
     image: solsson/kafka:2.1.1@sha256:8bc8242c649c395ab79d76cc83b1052e63b4efea7f83547bf11eb3ef5ea6f8e1
     depends_on:
     - kafka
@@ -95,7 +95,7 @@ services:
     - --zookeeper
     -   zookeeper:2181
     - --topic
-    -   topic1
+    -   topic2
     - --create
     - --if-not-exists
     - --partitions
@@ -103,15 +103,15 @@ services:
     - --replication-factor
     -   '1'
 
-  destination-topic2-create:
+  source-topic1-create:
     image: solsson/kafka:2.1.1@sha256:8bc8242c649c395ab79d76cc83b1052e63b4efea7f83547bf11eb3ef5ea6f8e1
     depends_on:
-    - destination-kafka
+    - source-kafka
     entrypoint:
     - ./bin/kafka-topics.sh
     command:
     - --zookeeper
-    -   destination-zookeeper:2181
+    -   source-zookeeper:2181
     - --topic
     -   topic2
     - --create
@@ -125,7 +125,7 @@ services:
     image: yolean/kafka-topics-copy:dev
     depends_on:
     - kafka
-    - destination-kafka
+    - source-kafka
     labels:
     - com.yolean.build-target
     environment:
