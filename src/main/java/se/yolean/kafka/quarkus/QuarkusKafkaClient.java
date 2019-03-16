@@ -36,7 +36,7 @@ public class QuarkusKafkaClient {
 	public void init() {
 		status = "initializing";
 		Properties props = new Properties();
-		props.put("bootstrap.servers", "localhost:19092");
+		props.put("bootstrap.servers", "kafka:19092");
 		props.put("group.id", "test");
 		props.put("enable.auto.commit", "true");
 		props.put("auto.commit.interval.ms", "1000");
