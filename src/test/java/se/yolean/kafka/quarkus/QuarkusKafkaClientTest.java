@@ -15,7 +15,7 @@ public class QuarkusKafkaClientTest {
           .when().get("/client")
           .then()
              .statusCode(200)
-             .body(is("hello\n"));
+             .body(is("consumer created\n"));
     }
 
 }

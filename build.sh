@@ -15,9 +15,12 @@ export JAVA_HOME=$GRAALVM_HOME
 #mvn package -Pnative
 
 # x64
-mvn package -Pnative -Dnative-image.docker-build=true
+mvn dependency:tree
+mvn test
+mvn package -Pnative -Dnative-image.docker-build=true -Dmaven.test.skip=true
 docker build -f src/main/docker/Dockerfile -t yolean/quarkus-kafka .
 
 docker run --rm -p 8080:8080 --name quarkus-kafka-test -d yolean/quarkus-kafka
-curl http://localhost:8080/client
+curl http://localhost:8080/client?n=[1-10]
+docker logs quarkus-kafka-test
 docker kill quarkus-kafka-test
