@@ -20,14 +20,14 @@ mvn test
 mvn package -Pnative -Dnative-image.docker-build=true -Dmaven.test.skip=true
 docker build -f src/main/docker/Dockerfile -t yolean/quarkus-kafka:dev .
 
-compose='docker-compose -f ./build-contracts/docker-compose.yml'
+function compose { docker-compose -f ./build-contracts/docker-compose.yml $@ }
 
-$compose up -d kafka
+compose up -d kafka
 sleep 5
-$compose up -d topic1-create
-$compose up -d quarkus-kafka
+compose up -d topic1-create
+compose up -d quarkus-kafka
 curl http://localhost:8080/client?n=[1-3]
 sleep 3
 curl http://localhost:8080/client?n=[1-3]
-$compose logs quarkus-kafka
-$compose down
+compose logs quarkus-kafka
+compose down
