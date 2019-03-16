@@ -30,7 +30,7 @@ apply plugin: 'org.standardout.eclipseconfig'
 
 group 'se.yolean'
 
-sourceCompatibility = 1.11
+sourceCompatibility = 1.8
 
 jib {
   from {

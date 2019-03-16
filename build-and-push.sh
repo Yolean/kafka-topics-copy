@@ -1,5 +1,11 @@
 #!/bin/sh
 set -e
+
+# WIP experiment with graalvm, can it reduce footprint?
+docker build -t kafka-topics-copy-builder builder/
+docker run --rm -v $(pwd):/workspace --name kafka-topics-copy-build kafka-topics-copy-builder --no-daemon clean build
+
+
 # TODO make jib build run the unit tests
 
 # If all tooling is available locally use
