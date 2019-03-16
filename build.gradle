@@ -66,3 +66,10 @@ dependencies {
 test {
   useJUnitPlatform()
 }
+
+task copyToLib(type: Copy) {
+	into "$buildDir/libs"
+	from configurations.runtime
+}
+
+build.dependsOn(copyToLib)

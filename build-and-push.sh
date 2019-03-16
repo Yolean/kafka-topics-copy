@@ -5,6 +5,9 @@ set -e
 docker build -t kafka-topics-copy-builder builder/
 docker run --rm -v $(pwd):/workspace --name kafka-topics-copy-build kafka-topics-copy-builder --no-daemon clean build
 
+#docker run --rm -v $(pwd):/workspace --name kafka-topics-copy-build --entrypoint bash -ti kafka-topics-copy-builder
+# java -classpath build/libs/*:build/classes/java/main/ se.yolean.kafka.topicscopy.cli.Main
+docker run --rm -v $(pwd):/workspace --name kafka-topics-copy-build --entrypoint native-image kafka-topics-copy-builder -classpath build/libs/*:build/classes/java/main/ se.yolean.kafka.topicscopy.cli.Main
 
 # TODO make jib build run the unit tests
 
