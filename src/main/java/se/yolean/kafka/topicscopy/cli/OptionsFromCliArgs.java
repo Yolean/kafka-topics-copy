@@ -4,12 +4,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import joptsimple.AbstractOptionSpec;
 import joptsimple.ArgumentAcceptingOptionSpec;
-import joptsimple.OptionException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import se.yolean.kafka.topicscopy.TopicsCopyOptions;
