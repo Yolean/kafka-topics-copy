@@ -12,7 +12,7 @@
 # docker run -i --rm -p 8080:8080 quarkus/quarkus-kafka
 #
 ###
-FROM registry.fedoraproject.org/fedora-minimal
+FROM registry.fedoraproject.org/fedora-minimal@sha256:28dcdc19fd1d55598dc308a44c40287f4b00d0bf5a53cd01c39368c16cf85d57
 WORKDIR /work/
 COPY target/*-runner /work/application
 RUN chmod 775 /work

@@ -12,3 +12,6 @@ gradlew
 out/
 node_modules
 dist
+# below is for quarkus+maven
+target
+quarkus.log
