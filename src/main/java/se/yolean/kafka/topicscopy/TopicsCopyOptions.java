@@ -1,19 +1,30 @@
 package se.yolean.kafka.topicscopy;
 
 import java.util.List;
-import java.util.Properties;
 
 public interface TopicsCopyOptions {
 
-  String getApplicationId();
+  String getGroupId();
 
-  String getBootstrapServers();
+  /**
+   * @return bootstrap servers string
+   */
+  String getSourceBootstrap();
 
-  List<String> getInput();
+  /**
+   * @return topic names and/or patterns
+   */
+  List<String> getSourceTopics();
 
-  String getOutput();
+  /**
+   * @return bootstrap servers string
+   */
+  String getTargetBootstrap();
 
-  Properties getCustomProperties();
+  /**
+   * @return topic name
+   */
+  String getTargetTopic();
 
   int getExitAfterIdleSeconds();
 
