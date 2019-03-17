@@ -119,8 +119,13 @@ services:
     labels:
     - com.yolean.build-target
     environment:
+    - GROUP_ID=copy1
+    - SOURCE_BOOTSTRAP=kafka:9092
     - SOURCE_TOPICS=topic1
+    - TARGET_BOOTSTRAP=destination-kafka:9092
     - TARGET_TOPIC=topic2
+    ports:
+    - 8080:8080
 
   test1:
     image: solsson/kafkacat-curl@sha256:524fde292beb0ea8c2afa7211bf5571b6ab163bec7a123dceeb85e7ba21acc50

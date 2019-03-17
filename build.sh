@@ -25,11 +25,10 @@ function compose {
 }
 
 compose up -d kafka
+compose up -d destination-kafka
 sleep 5
-compose up -d topic1-create
-compose up -d quarkus-kafka
-curl http://localhost:8080/client?n=[1-3]
-sleep 3
-curl http://localhost:8080/client?n=[1-3]
-compose logs quarkus-kafka
-compose down
+compose up -d topic1-create destination-topic2-create
+compose up -d copy1
+sleep 5
+curl http://localhost:8080/client
+compose logs copy1

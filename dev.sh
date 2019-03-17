@@ -30,7 +30,7 @@ echo k1=v1 | kafkacat -b localhost:19092 -P -t topic1 -K '='
 echo k2=v1 | kafkacat -b localhost:19092 -P -t topic1 -K '='
 echo k3=v1 | kafkacat -b localhost:19092 -P -t topic1 -K '='
 curl http://localhost:8080/client
-kafkacat -b localhost:19192 -C -t topic2 -K '='
+kafkacat -b localhost:19192 -C -t topic2 -K '=' -e
 
 EOF
 

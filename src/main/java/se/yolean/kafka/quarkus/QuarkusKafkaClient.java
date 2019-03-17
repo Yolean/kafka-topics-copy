@@ -32,11 +32,15 @@ import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import org.apache.kafka.common.serialization.ByteArraySerializer;
 
+import io.prometheus.client.Counter;
 import se.yolean.kafka.topicscopy.TopicsCopyOptions;
 import se.yolean.kafka.topicscopy.TopicsCopyOptionsEnv;
 
 @Path("/client")
 public class QuarkusKafkaClient {
+
+  static final Counter recordsCopied = Counter.build()
+      .name("records_copied").help("Total records copied from source to target").register();
 
   public static final Duration POLL_DURATION = Duration.ofMillis(1000);
   public static final long SEND_RECORD_TIMEOUT_MILLIS = 100;
@@ -135,6 +139,8 @@ public class QuarkusKafkaClient {
       // will store consumer offsets into their external state storage to maintain
       // transactionality.
       consumer.commitSync();
+
+      recordsCopied.inc(polled.count());
 
     } catch (ProducerFencedException e) {
       // https://hevodata.com/blog/kafka-exactly-once/ doesn't abortTransaction here
