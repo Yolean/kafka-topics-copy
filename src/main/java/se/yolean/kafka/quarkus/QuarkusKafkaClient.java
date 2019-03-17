@@ -60,7 +60,6 @@ public class QuarkusKafkaClient {
 
   public void init(TopicsCopyOptions options) {
 
-
     this.consumerProps = new Properties();
     consumerProps.put(ConsumerConfig.GROUP_ID_CONFIG, options.getGroupId());
     consumerProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, options.getSourceBootstrap());
@@ -81,12 +80,6 @@ public class QuarkusKafkaClient {
     producerProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class);
 
     status = "configured";
-
-    // https://www.baeldung.com/kafka-exactly-once says:
-    // Conversely, applications that must read and write to different Kafka clusters
-    // must use the older commitSync and commitAsync API. Typically, applications
-    // will store consumer offsets into their external state storage to maintain
-    // transactionality.
 
     sourceTopics = options.getSourceTopics();
     targetTopic = options.getTargetTopic();
@@ -124,38 +117,45 @@ public class QuarkusKafkaClient {
         ProducerRecord<byte[], byte[]> produce = getProduce(consumed);
         sent.add(producer.send(produce));
       }
-      status = polled.count() + "sent to " + targetTopic + ": ";
+      status = polled.count() + " messages sent to " + targetTopic + ": ";
       List<RecordMetadata> metadata = new ArrayList<>(polled.count());
       for (int i = 0; i < sent.size(); i++) {
         RecordMetadata m = sent.get(i).get(SEND_RECORD_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         metadata.add(i, m);
-        status += m.partition() + '-' + m.offset() + ' ';
+        status += ("" + m.partition() + '-' + m.offset() + ' ');
       }
 
       // https://hevodata.com/blog/kafka-exactly-once/, but what do we send for the cross-cluster mirror case?
       // producer.sendOffsetsToTransaction(offsets, consumerGroupId);
       producer.commitTransaction();
 
+      // https://www.baeldung.com/kafka-exactly-once says:
+      // Conversely, applications that must read and write to different Kafka clusters
+      // must use the older commitSync and commitAsync API. Typically, applications
+      // will store consumer offsets into their external state storage to maintain
+      // transactionality.
       consumer.commitSync();
 
     } catch (ProducerFencedException e) {
-      //producer.close();
+      // https://hevodata.com/blog/kafka-exactly-once/ doesn't abortTransaction here
       throw new RuntimeException("Unhandled", e);
     } catch (KafkaException e) {
       producer.abortTransaction();
+      status += " " + e;
       throw new RuntimeException("Unhandled", e);
     } catch (InterruptedException e) {
-      e.printStackTrace();
+      producer.abortTransaction();
+      status += " " + e;
       throw new RuntimeException("Unhandled", e);
     } catch (ExecutionException e) {
-      e.printStackTrace();
+      producer.abortTransaction();
+      status += " " + e;
       throw new RuntimeException("Unhandled", e);
     } catch (TimeoutException e) {
-      e.printStackTrace();
+      producer.abortTransaction();
+      status += " " + e;
       throw new RuntimeException("Unhandled", e);
     } finally {
-      producer.abortTransaction();
-      status = "Failed";
       consumer.close();
       producer.close();
     }
