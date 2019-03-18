@@ -5,27 +5,23 @@ import java.util.Iterator;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.Header;
+import org.apache.kafka.common.header.Headers;
 
 public class RecordCopy {
 
   private String targetTopic;
+  private boolean preservePartition;
 
-  public RecordCopy(String targetTopic) {
+  public RecordCopy(String targetTopic, boolean preservePartition) {
     this.targetTopic = targetTopic;
+    this.preservePartition = preservePartition;
   }
 
   ProducerRecord<byte[], byte[]> getProduce(ConsumerRecord<byte[], byte[]> consumed) {
-    ProducerRecord<byte[], byte[]> record;
-    if (consumed.key() == null) {
-      record = new ProducerRecord<byte[], byte[]>(targetTopic, consumed.value());
-    } else {
-      record = new ProducerRecord<byte[], byte[]>(targetTopic, consumed.key(), consumed.value());
-    }
-    Iterator<Header> headers = consumed.headers().iterator();
-    while (headers.hasNext()) {
-      record.headers().add(headers.next());
-    }
-    return record;
+    Long timestamp = consumed.timestamp();
+    Integer partition = preservePartition ? consumed.partition() : null;
+    Headers headers = consumed.headers();
+    return new ProducerRecord<byte[], byte[]>(targetTopic, partition, timestamp, consumed.key(), consumed.value(), headers);
   }
 
 }

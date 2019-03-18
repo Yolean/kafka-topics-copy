@@ -88,7 +88,7 @@ public class TopicsCopyKafkaClient {
     final Subscribe subscribe = new Subscribe(create, options.getSourceTopics());
     schedule(subscribe);
 
-    RecordCopy recordCopy = new RecordCopy(options.getTargetTopic());
+    RecordCopy recordCopy = new RecordCopy(options.getTargetTopic(), false);
 
     pollScheduler = new PollScheduler(subscribe, recordCopy);
     pollScheduler.again();

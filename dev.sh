@@ -32,6 +32,15 @@ sleep 1
 curl http://localhost:8080/metrics
 kafkacat -b localhost:19192 -C -t topic2 -K '=' -e
 
+# Test null keys + timestamp preservation
+curl http://localhost:8080/metrics
+echo nokey | kafkacat -b localhost:19092 -P -t topic1
+echo k4=t1 | kafkacat -b localhost:19092 -P -t topic1 -K '='
+kafkacat -b localhost:19092 -C -t topic1 -o -1 -e -f '%k=%s %T\n'
+sleep 1
+curl http://localhost:8080/metrics
+kafkacat -b localhost:19192 -C -t topic2 -o -3 -e -f '%k=%s %T\n'
+
 EOF
 
 mvn compile quarkus:dev
