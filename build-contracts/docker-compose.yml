@@ -153,13 +153,12 @@ services:
       # consume, after some wait (can we use kafkacat to ignore old messages and avoid the wait?)
       sleep 1
       curl -s http://copy1:8080/metrics
-      kafkacat -b destination-kafka:9092 -C -K '=' -t topic2 -o -3 -e
-      consumed=$$(kafkacat -b destination-kafka:9092 -C -K '=' -t topic2 -p 0 -o -1 -e)
+      consumed=$$(kafkacat -b destination-kafka:9092 -C -K '=' -t topic2 -p 0 -e | tail -n 1)
       echo "Consumed: $$consumed"
       [ "$$consumed" == "test1=$$now" ] || exit 1
       # copare timestamps
-      producedT=$$(kafkacat -b kafka:9092 -C -K '=' -t topic1 -p 0 -o -1 -e -f '%T')
-      consumedT=$$(kafkacat -b destination-kafka:9092 -C -K '=' -t topic2 -p 0 -o -1 -e -f '%T')
+      producedT=$$(kafkacat -b kafka:9092 -C -K '=' -t topic1 -p 0 -e -f '%T\n' | tail -n 1)
+      consumedT=$$(kafkacat -b destination-kafka:9092 -C -K '=' -t topic2 -p 0 -e -f '%T\n' | tail -n 1)
       echo "$$producedT <> $$consumedT ?" && [ "$$producedT" == "$$consumedT" ] || exit 2
       curl -s http://copy1:8080/metrics
       echo "--- End of test ---"

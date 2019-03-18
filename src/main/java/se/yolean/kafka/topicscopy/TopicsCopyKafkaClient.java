@@ -92,7 +92,7 @@ public class TopicsCopyKafkaClient {
     schedule(subscribe);
 
     if (options.getPartitionPreserve()) {
-      logger.warn("{} is enabled. Not well tested, and there's no validation of source to target partition setup.", TopicsCopyOptionsEnv.ENV_NAME_PARTITION_PRESERVE);
+      logger.info("Note that there's no validation of source to target partition setup with {}", TopicsCopyOptionsEnv.ENV_NAME_PARTITION_PRESERVE);
     }
     RecordCopy recordCopy = new RecordCopy(options.getTargetTopic(), options.getPartitionPreserve());
 
