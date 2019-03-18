@@ -27,8 +27,6 @@ public class CopyByPoll implements Runnable {
   public static final long DEFAULT_POLL_DURATION_MILLIS = 1000;
   public static final long DEFAULT_PRODUCE_WAIT_TIMEOUT_MILLIS = 5000;
 
-  final Logger logger = LoggerFactory.getLogger(CopyByPoll.class);
-
   KafkaConsumer<byte[], byte[]> consumer;
 
   KafkaProducer<byte[], byte[]> producer;
@@ -67,7 +65,6 @@ public class CopyByPoll implements Runnable {
     ConsumerRecords<byte[], byte[]> polled = consumer.poll(duration);
 
     final int count = polled.count();
-    logger.debug("Received {} records", count);
 
     if (count == 0) {
       statusHandlers.forEach(h -> h.polledEmpty());

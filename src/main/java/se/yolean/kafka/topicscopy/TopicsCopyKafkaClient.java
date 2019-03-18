@@ -27,16 +27,19 @@ import se.yolean.kafka.topicscopy.tasks.TopicCheck;
 public class TopicsCopyKafkaClient {
 
   static final Counter recordsCopied = Counter.build()
-      .name("records_copied").help("Total records copied from source to target").register();
+      .name("ktc_records_copied").help("Total records copied from source to target").register();
 
-  private final Logger logger = LoggerFactory.getLogger(TopicsCopyKafkaClient.class);
+  static final Counter consumerPolls = Counter.build()
+      .name("ktc_consumer_polls").help("Total records copied from source to target").register();
+
+  final Logger logger = LoggerFactory.getLogger(TopicsCopyKafkaClient.class);
 
   public static final Duration POLL_DURATION = Duration.ofMillis(1000);
 
   public static final long SEND_RECORD_TIMEOUT_MILLIS = 5000;
 
   /**
-   * Like #Shut
+   * For stuff like {@link Shutdown}.
    */
   public static final long MAINTENANCE_TIMEOUT_MILLIS = 20000;
 
@@ -54,7 +57,7 @@ public class TopicsCopyKafkaClient {
 
   Shutdown shutdown = null;
 
-  private PollScheduler pollScheduler;
+  PollScheduler pollScheduler;
 
   public TopicsCopyKafkaClient() {
   }
@@ -146,11 +149,13 @@ public class TopicsCopyKafkaClient {
 
     @Override
     public void polledEmpty() {
+      consumerPolls.inc();
       again();
     }
 
     @Override
     public void copied(int count) {
+      consumerPolls.inc();
       recordsCopied.inc(count);
       again();
     }
