@@ -1,6 +1,9 @@
 # KTC
 
 Copy/mirror kafka topics, as a microservice.
+Within a cluster or between clusters.
+Preserves message timestamps and headers.
+Optionally preserves partition.
 
 Unlike [MirrorMaker](https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=27846330)
 and [MirrorMaker 2](https://cwiki.apache.org/confluence/display/KAFKA/KIP-382%3A+MirrorMaker+2.0)
@@ -22,11 +25,6 @@ That grows with kafka use though.
 ### Experiment 2: Kafka exactly-once semantics
 
 The framework should be stable, but the [client code](src/main/java/se/yolean/kafka/topicscopy/tasks/CopyByPoll.java) here needs review, in particular WRT error handling.
-
-# [At your own risk] Kafka Topics Copy
-
-Copy a Kafka Topic within the same Kafka Cluster. Useful for reducing the number of partitions for a topic.
-It keeps the keys of records, therefore ordering for a specific key is still guaranteed, even though the number of partitions is different.
 
 # Running
 
