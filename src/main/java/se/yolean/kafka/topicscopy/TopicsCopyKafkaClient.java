@@ -1,37 +1,14 @@
 package se.yolean.kafka.topicscopy;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.clients.producer.RecordMetadata;
-import org.apache.kafka.common.KafkaException;
-import org.apache.kafka.common.PartitionInfo;
-import org.apache.kafka.common.errors.ProducerFencedException;
-import org.apache.kafka.common.header.Header;
-import org.apache.kafka.common.serialization.ByteArrayDeserializer;
-import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,7 +69,7 @@ public class TopicsCopyKafkaClient {
     awaitKafka();
     logger.info("Created consumer and producer {}", create);
 
-    for (int i = 0;; i++) {
+    while (true) {
       Duration listTopicsTimeout = Duration.ofSeconds(3);
       TopicCheck topicCheck = new TopicCheck(create, options.getSourceTopics(), listTopicsTimeout);
       schedule(topicCheck);
@@ -159,9 +136,9 @@ public class TopicsCopyKafkaClient {
 
     void again() {
       if (keepPolling) {
-        logger.trace("Scheduling a new poll");
         schedule(new CopyByPoll(subscribe, recordCopy)
-            .setStatusHandler(this));
+            .setStatusHandler(this)
+            .setStatusHandler(readiness));
       } else {
         logger.info("Re-scheduling aborted");
       }
@@ -169,13 +146,11 @@ public class TopicsCopyKafkaClient {
 
     @Override
     public void polledEmpty() {
-      logger.info("Polling returned empty");
       again();
     }
 
     @Override
     public void copied(int count) {
-      logger.info("Polling returned {} records", count);
       recordsCopied.inc(count);
       again();
     }
