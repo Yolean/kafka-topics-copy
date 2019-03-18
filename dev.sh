@@ -18,10 +18,7 @@ export SOURCE_BOOTSTRAP=localhost:19092
 export SOURCE_TOPICS=topic1
 export TARGET_BOOTSTRAP=localhost:19192
 export TARGET_TOPIC=topic2
-
-# In real scenarios you'll probably reset to --to-earliest
-echo "# Try rerunning this script if the following fails as kafka might not have started yet on first run ..."
-compose exec kafka ./bin/kafka-consumer-groups.sh --bootstrap-server=localhost:9092 --group $GROUP_ID --reset-offsets --topic topic1 --to-latest --execute
+export AUTO_OFFSET_RESET=latest
 
 cat <<EOF
 

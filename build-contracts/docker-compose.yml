@@ -124,6 +124,8 @@ services:
     - SOURCE_TOPICS=topic1
     - TARGET_BOOTSTRAP=destination-kafka:9092
     - TARGET_TOPIC=topic2
+    # You probably want "none" (the default) or "earliest" in production
+    - AUTO_OFFSET_RESET=latest
     ports:
     - 8080:8080
 

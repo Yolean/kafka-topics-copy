@@ -14,6 +14,7 @@ public class TopicsCopyOptionsEnv implements TopicsCopyOptions {
   public static final String ENV_NAME_SOURCE_TOPICS = "SOURCE_TOPICS";
   public static final String ENV_NAME_TARGET_BOOTSTRAP = "TARGET_BOOTSTRAP";
   public static final String ENV_NAME_TARGET_TOPIC = "TARGET_TOPIC";
+  public static final String ENV_NAME_AUTO_OFFSET_RESET = "AUTO_OFFSET_RESET";
   private String groupId;
   private String sourceBootstrap;
   private String targetBootstrap;
@@ -30,7 +31,7 @@ public class TopicsCopyOptionsEnv implements TopicsCopyOptions {
     this.targetBootstrap = env.containsKey(ENV_NAME_TARGET_BOOTSTRAP) ? env.get(ENV_NAME_TARGET_BOOTSTRAP) : defaults.getTargetBootstrap();
     this.targetTopic = env.containsKey(ENV_NAME_TARGET_TOPIC) ? env.get(ENV_NAME_TARGET_TOPIC) : defaults.getTargetTopic();
     this.sourceTopics = env.containsKey(ENV_NAME_SOURCE_TOPICS) ? Arrays.asList(env.get(ENV_NAME_SOURCE_TOPICS)) : defaults.getSourceTopics();
-    this.autoOffsetReset = defaults.getAutoOffsetReset();
+    this.autoOffsetReset = env.containsKey(ENV_NAME_AUTO_OFFSET_RESET) ? env.get(ENV_NAME_AUTO_OFFSET_RESET) : defaults.getAutoOffsetReset();
     this.exitAfterIdleSeconds = defaults.getExitAfterIdleSeconds();
   }
 
