@@ -19,9 +19,9 @@ public class Healthz {
   @Produces(MediaType.TEXT_PLAIN)
   public Response get() {
     if (readiness.isApplicationReady()) {
-      return Response.ok("ready").build();
+      return Response.ok("ready\n").build();
     } else {
-      return Response.status(500).entity("unready").build();
+      return Response.status(500).entity("unready\n").build();
     }
   }
 
