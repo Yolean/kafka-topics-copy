@@ -92,8 +92,7 @@ public class TopicsCopyKafkaClient {
     awaitKafka();
     logger.info("Created consumer and producer {}", create);
 
-    final int retries = 10;
-    for (int i = 0; i < retries; i++) {
+    for (int i = 0;; i++) {
       Duration listTopicsTimeout = Duration.ofSeconds(3);
       TopicCheck topicCheck = new TopicCheck(create, options.getSourceTopics(), listTopicsTimeout);
       schedule(topicCheck);
@@ -102,9 +101,10 @@ public class TopicsCopyKafkaClient {
         logger.info("Found source topics {}", options.getSourceTopics());
         break;
       };
-      if (i == retries - 1) {
-        throw new RuntimeException("Failed to find source topics " + options.getSourceTopics() + " after " + i + " retries");
-      }
+      // Commented out until we've figured out how to trigger app termination
+      //if (i == retries) {
+      //  throw new RuntimeException("Failed to find source topics " + options.getSourceTopics() + " after " + i + " retries");
+      //}
       logger.debug("Retrying topic check for: " + options.getSourceTopics());
     }
 
