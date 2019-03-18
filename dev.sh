@@ -26,13 +26,15 @@ compose exec kafka ./bin/kafka-consumer-groups.sh --bootstrap-server=localhost:9
 cat <<EOF
 
 # Once the service is up and running a test scenario is for example
+curl http://localhost:8080/healthz
 echo k1=v1 | kafkacat -b localhost:19092 -P -t topic1 -K '='
 echo k2=v1 | kafkacat -b localhost:19092 -P -t topic1 -K '='
 echo k3=v1 | kafkacat -b localhost:19092 -P -t topic1 -K '='
-curl http://localhost:8080/client
+curl http://localhost:8080/metrics
+sleep 1
+curl http://localhost:8080/metrics
 kafkacat -b localhost:19192 -C -t topic2 -K '=' -e
 
 EOF
 
-# colors make text invisible in OSX terminal, so do a dummy pipe
-mvn compile quarkus:dev | sed 's/qwertyuio//'
+mvn compile quarkus:dev

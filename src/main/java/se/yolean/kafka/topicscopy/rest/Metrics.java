@@ -1,4 +1,4 @@
-package se.yolean.kafka.quarkus;
+package se.yolean.kafka.topicscopy.rest;
 
 import java.io.IOException;
 import java.io.OutputStream;

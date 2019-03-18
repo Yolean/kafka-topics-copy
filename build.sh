@@ -30,5 +30,6 @@ sleep 5
 compose up -d topic1-create destination-topic2-create
 compose up -d copy1
 sleep 5
-curl http://localhost:8080/client
+curl http://localhost:8080/metrics
+curl http://localhost:8080/healthz
 compose logs copy1

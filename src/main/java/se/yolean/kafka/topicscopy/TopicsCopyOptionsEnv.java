@@ -4,6 +4,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Singleton;
+
+@Singleton
 public class TopicsCopyOptionsEnv implements TopicsCopyOptions {
 
   public static final String ENV_NAME_GROUP_ID = "GROUP_ID";
