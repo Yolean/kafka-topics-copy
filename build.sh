@@ -18,18 +18,8 @@ export JAVA_HOME=$GRAALVM_HOME
 mvn dependency:tree
 mvn test
 mvn package -Pnative -Dnative-image.docker-build=true -Dmaven.test.skip=true
-docker build -f src/main/docker/Dockerfile -t yolean/quarkus-kafka:dev .
+docker build -f src/main/docker/Dockerfile -t yolean/kafka-topics-copy:dev .
 
-function compose {
-  docker-compose -f ./build-contracts/docker-compose.yml $@
-}
-
-compose up -d kafka
-compose up -d destination-kafka
-sleep 5
-compose up -d topic1-create destination-topic2-create
-compose up -d copy1
-sleep 5
-curl http://localhost:8080/metrics
-curl http://localhost:8080/healthz
-compose logs copy1
+build-contract
+docker tag yolean/kafka-topics-copy:dev yolean/kafka-topics-copy:latest
+docker push yolean/kafka-topics-copy:latest

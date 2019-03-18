@@ -112,12 +112,13 @@ services:
     -   '1'
 
   copy1:
-    image: yolean/quarkus-kafka:dev
+    image: yolean/kafka-topics-copy:dev
     depends_on:
     - kafka
     - destination-kafka
-    labels:
-    - com.yolean.build-target
+    # We're building and pushing in the wrapper script
+    #labels:
+    #- com.yolean.build-target
     environment:
     - GROUP_ID=copy1
     - SOURCE_BOOTSTRAP=kafka:9092
@@ -145,7 +146,7 @@ services:
       # create topic / verify topic existence
       until kafkacat -b kafka:9092 -C -K '=' -t topic1 -o -1 -e; do sleep 3; done
       until kafkacat -b destination-kafka:9092 -C -K '=' -t topic2 -o -1 -e; do sleep 3; done
-      curl -s http://copy1:8080/healthz
+      until curl -s -f http://copy1:8080/healthz; do sleep 1; done
       # produce to source topic
       now=$$(date --iso-8601=ns)
       echo "Now: $$now"
