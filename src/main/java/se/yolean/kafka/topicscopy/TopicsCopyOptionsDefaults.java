@@ -41,4 +41,9 @@ public class TopicsCopyOptionsDefaults implements TopicsCopyOptions {
     return DEFAULT_AUTO_OFFSET_RESET;
   }
 
+  @Override
+  public boolean getPartitionPreserve() {
+    return false;
+  }
+
 }

@@ -30,4 +30,9 @@ public interface TopicsCopyOptions {
 
   String getAutoOffsetReset();
 
+  /**
+   * @return true to copy to the same partition number that the source message came from
+   */
+  boolean getPartitionPreserve();
+
 }

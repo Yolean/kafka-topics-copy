@@ -15,13 +15,15 @@ public class TopicsCopyOptionsEnv implements TopicsCopyOptions {
   public static final String ENV_NAME_TARGET_BOOTSTRAP = "TARGET_BOOTSTRAP";
   public static final String ENV_NAME_TARGET_TOPIC = "TARGET_TOPIC";
   public static final String ENV_NAME_AUTO_OFFSET_RESET = "AUTO_OFFSET_RESET";
-  private String groupId;
-  private String sourceBootstrap;
-  private String targetBootstrap;
-  private String targetTopic;
-  private List<String> sourceTopics;
-  private String autoOffsetReset;
-  private int exitAfterIdleSeconds;
+  public static final String ENV_NAME_PARTITION_PRESERVE = "PARTITION_PRESERVE";
+  final String groupId;
+  final String sourceBootstrap;
+  final String targetBootstrap;
+  final String targetTopic;
+  final List<String> sourceTopics;
+  final String autoOffsetReset;
+  final int exitAfterIdleSeconds;
+  final boolean partitionPreserve;
 
   public TopicsCopyOptionsEnv() {
     TopicsCopyOptionsDefaults defaults = new TopicsCopyOptionsDefaults();
@@ -33,6 +35,7 @@ public class TopicsCopyOptionsEnv implements TopicsCopyOptions {
     this.sourceTopics = env.containsKey(ENV_NAME_SOURCE_TOPICS) ? Arrays.asList(env.get(ENV_NAME_SOURCE_TOPICS)) : defaults.getSourceTopics();
     this.autoOffsetReset = env.containsKey(ENV_NAME_AUTO_OFFSET_RESET) ? env.get(ENV_NAME_AUTO_OFFSET_RESET) : defaults.getAutoOffsetReset();
     this.exitAfterIdleSeconds = defaults.getExitAfterIdleSeconds();
+    this.partitionPreserve = env.containsKey(ENV_NAME_PARTITION_PRESERVE) ? Boolean.parseBoolean(env.get(ENV_NAME_PARTITION_PRESERVE)) : defaults.getPartitionPreserve();
   }
 
   @Override
@@ -68,6 +71,11 @@ public class TopicsCopyOptionsEnv implements TopicsCopyOptions {
   @Override
   public String getAutoOffsetReset() {
     return this.autoOffsetReset;
+  }
+
+  @Override
+  public boolean getPartitionPreserve() {
+    return this.partitionPreserve;
   }
 
 }

@@ -91,7 +91,10 @@ public class TopicsCopyKafkaClient {
     final Subscribe subscribe = new Subscribe(create, options.getSourceTopics());
     schedule(subscribe);
 
-    RecordCopy recordCopy = new RecordCopy(options.getTargetTopic(), false);
+    if (options.getPartitionPreserve()) {
+      logger.warn("{} is enabled. Not well tested, and there's no validation of source to target partition setup.", TopicsCopyOptionsEnv.ENV_NAME_PARTITION_PRESERVE);
+    }
+    RecordCopy recordCopy = new RecordCopy(options.getTargetTopic(), options.getPartitionPreserve());
 
     pollScheduler = new PollScheduler(subscribe, recordCopy);
     pollScheduler.again();
