@@ -29,18 +29,15 @@
       <artifactId>quarkus-resteasy</artifactId>
     </dependency>
     <dependency>
+      <!-- Needed for native build to work with org.apache.kafka.kafka-clients -->
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-smallrye-reactive-messaging-kafka</artifactId>
+      <artifactId>quarkus-kafka-client</artifactId>
       <exclusions>
         <exclusion>
           <groupId>org.apache.kafka</groupId>
           <artifactId>*</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-vertx</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.kafka</groupId>
