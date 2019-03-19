@@ -6,6 +6,8 @@ import java.util.Map;
 
 import javax.inject.Singleton;
 
+import org.apache.kafka.common.record.CompressionType;
+
 @Singleton
 public class TopicsCopyOptionsEnv implements TopicsCopyOptions {
 
@@ -14,12 +16,14 @@ public class TopicsCopyOptionsEnv implements TopicsCopyOptions {
   public static final String ENV_NAME_SOURCE_TOPICS = "SOURCE_TOPICS";
   public static final String ENV_NAME_TARGET_BOOTSTRAP = "TARGET_BOOTSTRAP";
   public static final String ENV_NAME_TARGET_TOPIC = "TARGET_TOPIC";
+  public static final String ENV_NAME_TARGET_COMPRESSION = "TARGET_COMPRESSION";
   public static final String ENV_NAME_AUTO_OFFSET_RESET = "AUTO_OFFSET_RESET";
   public static final String ENV_NAME_PARTITION_PRESERVE = "PARTITION_PRESERVE";
   final String groupId;
   final String sourceBootstrap;
   final String targetBootstrap;
   final String targetTopic;
+  final CompressionType targetCompression;
   final List<String> sourceTopics;
   final String autoOffsetReset;
   final int exitAfterIdleSeconds;
@@ -32,6 +36,7 @@ public class TopicsCopyOptionsEnv implements TopicsCopyOptions {
     this.sourceBootstrap = env.containsKey(ENV_NAME_SOURCE_BOOTSTRAP) ? env.get(ENV_NAME_SOURCE_BOOTSTRAP) : defaults.getSourceBootstrap();
     this.targetBootstrap = env.containsKey(ENV_NAME_TARGET_BOOTSTRAP) ? env.get(ENV_NAME_TARGET_BOOTSTRAP) : defaults.getTargetBootstrap();
     this.targetTopic = env.containsKey(ENV_NAME_TARGET_TOPIC) ? env.get(ENV_NAME_TARGET_TOPIC) : defaults.getTargetTopic();
+    this.targetCompression = env.containsKey(ENV_NAME_TARGET_COMPRESSION) ? CompressionType.forName(env.get(ENV_NAME_TARGET_COMPRESSION)) : defaults.getTargetCompression();
     this.sourceTopics = env.containsKey(ENV_NAME_SOURCE_TOPICS) ? Arrays.asList(env.get(ENV_NAME_SOURCE_TOPICS)) : defaults.getSourceTopics();
     this.autoOffsetReset = env.containsKey(ENV_NAME_AUTO_OFFSET_RESET) ? env.get(ENV_NAME_AUTO_OFFSET_RESET) : defaults.getAutoOffsetReset();
     this.exitAfterIdleSeconds = defaults.getExitAfterIdleSeconds();
@@ -61,6 +66,11 @@ public class TopicsCopyOptionsEnv implements TopicsCopyOptions {
   @Override
   public String getTargetTopic() {
     return this.targetTopic;
+  }
+
+  @Override
+  public CompressionType getTargetCompression() {
+    return this.targetCompression;
   }
 
   @Override

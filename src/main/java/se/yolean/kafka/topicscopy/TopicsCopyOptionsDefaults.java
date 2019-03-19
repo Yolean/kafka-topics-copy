@@ -2,6 +2,8 @@ package se.yolean.kafka.topicscopy;
 
 import java.util.List;
 
+import org.apache.kafka.common.record.CompressionType;
+
 public class TopicsCopyOptionsDefaults implements TopicsCopyOptions {
 
   private static final String DEFAULT_AUTO_OFFSET_RESET = "none";
@@ -29,6 +31,11 @@ public class TopicsCopyOptionsDefaults implements TopicsCopyOptions {
   @Override
   public String getTargetTopic() {
     throw new RuntimeException("Required: " + TopicsCopyOptionsEnv.ENV_NAME_TARGET_TOPIC);
+  }
+
+  @Override
+  public CompressionType getTargetCompression() {
+    return CompressionType.NONE;
   }
 
   @Override

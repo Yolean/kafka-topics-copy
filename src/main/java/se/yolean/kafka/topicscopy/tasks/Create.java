@@ -48,6 +48,7 @@ public class Create implements Runnable {
     producerProps.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, options.getGroupId() + "-tx1");
     producerProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class);
     producerProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class);
+    producerProps.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, options.getTargetCompression());
 
     createProducer(producerProps);
   }

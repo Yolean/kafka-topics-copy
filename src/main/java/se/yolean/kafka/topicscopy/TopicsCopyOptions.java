@@ -2,6 +2,8 @@ package se.yolean.kafka.topicscopy;
 
 import java.util.List;
 
+import org.apache.kafka.common.record.CompressionType;
+
 public interface TopicsCopyOptions {
 
   String getGroupId();
@@ -25,6 +27,8 @@ public interface TopicsCopyOptions {
    * @return topic name
    */
   String getTargetTopic();
+
+  CompressionType getTargetCompression();
 
   int getExitAfterIdleSeconds();
 
