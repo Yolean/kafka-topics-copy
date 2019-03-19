@@ -17,8 +17,11 @@ export JAVA_HOME=$GRAALVM_HOME
 # x64
 mvn dependency:tree
 mvn test
-mvn package -Pnative -Dnative-image.docker-build=true
-docker build -f src/main/docker/Dockerfile -t yolean/kafka-topics-copy:dev .
+
+#mvn package -Pnative -Dnative-image.docker-build=true
+#docker build -f src/main/docker/Dockerfile -t yolean/kafka-topics-copy:dev .
+mvn package
+docker build -f ./Dockerfile -t yolean/kafka-topics-copy:dev .
 
 build-contract
 docker tag yolean/kafka-topics-copy:dev yolean/kafka-topics-copy:latest
