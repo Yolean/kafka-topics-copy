@@ -43,6 +43,10 @@ public class TopicsCopyKafkaClient {
    */
   public static final long MAINTENANCE_TIMEOUT_MILLIS = 20000;
 
+  static {
+    TricksForNative.nativeSupportCompressionTypesSnappy();
+  }
+
   /**
    * https://quarkus.io/guides/cdi-reference "Quarkus users are encouraged not to
    * use private members"
