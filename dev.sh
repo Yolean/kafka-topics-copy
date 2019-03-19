@@ -41,6 +41,11 @@ sleep 1
 curl http://localhost:8080/metrics
 kafkacat -b localhost:19192 -C -t topic2 -o -3 -e -f '%k=%s %T\n'
 
+# Test compression
+echo compression1=gzip | kafkacat -b localhost:19092 -P -t topic1 -K '=' -z gzip
+echo compression2=snappy | kafkacat -b localhost:19092 -P -t topic1 -K '=' -z snappy
+sleep 1
+kafkacat -b localhost:19192 -C -t topic2 -o -3 -e -f '%k=%s %T\n'
 EOF
 
 mvn compile quarkus:dev
