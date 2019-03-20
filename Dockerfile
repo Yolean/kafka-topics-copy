@@ -9,8 +9,14 @@ ENV MAVEN_HOME=/usr/share/maven
 ENV MAVEN_CONFIG=/root/.m2
 
 WORKDIR /workspace
+RUN mvn io.quarkus:quarkus-maven-plugin:0.12.0:create \
+    -DprojectGroupId=org.acme \
+    -DprojectArtifactId=getting-started \
+    -DclassName="org.acme.quickstart.GreetingResource" \
+    -Dpath="/hello"
 COPY pom.xml .
-RUN mvn package || echo "OK, just caching dependencies"
+RUN mvn package
+RUN rm -r src target mvnw* && ls -l
 COPY . .
 RUN mvn -o package
 
