@@ -29,6 +29,24 @@
       <artifactId>quarkus-resteasy</artifactId>
     </dependency>
     <dependency>
+      <!-- Needed for native build to work with org.apache.kafka.kafka-clients -->
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-kafka-client</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-kafka-client-runtime</artifactId>
+      <version>${quarkus.version}</version>
+      <scope>system</scope>
+      <systemPath>${basedir}/lib/io.quarkus.quarkus-kafka-client-runtime-${quarkus.version}.jar</systemPath>
+    </dependency>
+    <dependency>
       <groupId>org.apache.kafka</groupId>
       <artifactId>kafka-clients</artifactId>
       <version>2.1.1</version>
@@ -76,19 +94,6 @@
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
           </systemProperties>
         </configuration>
-      </plugin>
-      <!-- For se.yolean.kafka.quarkus, based on https://github.com/quarkusio/quarkus/blob/0.12.0/extensions/kafka-client -->
-      <plugin>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <configuration>
-              <annotationProcessorPaths>
-                  <path>
-                      <groupId>io.quarkus</groupId>
-                      <artifactId>quarkus-extension-processor</artifactId>
-                      <version>${quarkus.version}</version>
-                  </path>
-              </annotationProcessorPaths>
-          </configuration>
       </plugin>
     </plugins>
   </build>
