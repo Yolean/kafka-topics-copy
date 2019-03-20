@@ -29,17 +29,6 @@
       <artifactId>quarkus-resteasy</artifactId>
     </dependency>
     <dependency>
-      <!-- Needed for native build to work with org.apache.kafka.kafka-clients -->
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-kafka-client</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.kafka</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
       <groupId>org.apache.kafka</groupId>
       <artifactId>kafka-clients</artifactId>
       <version>2.1.1</version>
