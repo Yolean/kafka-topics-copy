@@ -1,12 +1,23 @@
-#FROM maven:3.6.0-jdk-8-slim@sha256:c3e480a0180ff76cfd2c4d51672ca9c050009b98eba8f9d6b9e2752c8ef2956b as jar
-#WORKDIR /workspace
-#COPY pom.xml .
-#RUN mvn dependency:tree
-#COPY . .
-#RUN mvn package
+FROM maven:3.6.0-jdk-8-slim@sha256:c3e480a0180ff76cfd2c4d51672ca9c050009b98eba8f9d6b9e2752c8ef2956b as maven
 
 FROM oracle/graalvm-ce:1.0.0-rc14@sha256:ea22ec502d371af47524ceedbe6573caaa59d5143c2c122a46c8eedf40c961f0 \
   as native-build
+
+COPY --from=maven /usr/share/maven /usr/share/maven
+RUN ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
+ENV MAVEN_HOME=/usr/share/maven
+ENV MAVEN_CONFIG=/root/.m2
+
+WORKDIR /workspace
+COPY pom.xml .
+RUN mvn dependency:tree
+RUN mvn resources:resources
+RUN mvn compiler:compile
+RUN mvn surefire:test
+RUN mvn jar:jar && rm target/quarkus-kafka-1.0-SNAPSHOT.jar
+RUN mvn quarkus-maven-plugin:build || echo "OK, just caching dependencies"
+COPY . .
+RUN mvn package
 
 WORKDIR /project
 COPY target .
