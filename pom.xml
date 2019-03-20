@@ -77,6 +77,19 @@
           </systemProperties>
         </configuration>
       </plugin>
+      <!-- For se.yolean.kafka.quarkus, based on https://github.com/quarkusio/quarkus/blob/0.12.0/extensions/kafka-client -->
+      <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <configuration>
+              <annotationProcessorPaths>
+                  <path>
+                      <groupId>io.quarkus</groupId>
+                      <artifactId>quarkus-extension-processor</artifactId>
+                      <version>${quarkus.version}</version>
+                  </path>
+              </annotationProcessorPaths>
+          </configuration>
+      </plugin>
     </plugins>
   </build>
   <profiles>
