@@ -34,17 +34,10 @@
       <artifactId>quarkus-kafka-client</artifactId>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
+          <groupId>org.apache.kafka</groupId>
           <artifactId>*</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-kafka-client-runtime</artifactId>
-      <version>${quarkus.version}</version>
-      <scope>system</scope>
-      <systemPath>${basedir}/lib/io.quarkus.quarkus-kafka-client-runtime-${quarkus.version}.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>org.apache.kafka</groupId>
