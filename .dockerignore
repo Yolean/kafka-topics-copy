@@ -1,8 +1,5 @@
 *
 !src
 !pom.xml
-# because mvn package doesn't work in dockerized maven (The forked VM terminated without properly saying goodbye)
-!target/*-runner.jar
-!target/lib
-# in case we want to run `mvn package -Pnative -Dnative-image.docker-build=true` outside docker as well
+# in case we want to run `mvn package -Pnative -Dnative-image.docker-build=true` outside docker
 #!target/*-runner
