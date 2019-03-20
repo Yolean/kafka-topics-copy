@@ -19,8 +19,6 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.errors.ProducerFencedException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class CopyByPoll implements Runnable {
 

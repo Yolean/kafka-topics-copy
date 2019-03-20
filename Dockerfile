@@ -10,14 +10,9 @@ ENV MAVEN_CONFIG=/root/.m2
 
 WORKDIR /workspace
 COPY pom.xml .
-RUN mvn dependency:tree
-RUN mvn resources:resources
-RUN mvn compiler:compile
-RUN mvn surefire:test
-RUN mvn jar:jar && rm target/quarkus-kafka-1.0-SNAPSHOT.jar
-RUN mvn quarkus-maven-plugin:build || echo "OK, just caching dependencies"
+RUN mvn dependency:go-offline
 COPY . .
-RUN mvn package
+RUN mvn -o package
 
 WORKDIR /project
 COPY target .
