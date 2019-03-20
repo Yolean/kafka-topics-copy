@@ -10,7 +10,7 @@ ENV MAVEN_CONFIG=/root/.m2
 
 WORKDIR /workspace
 COPY pom.xml .
-RUN mvn quarkus-maven-plugin:build || echo "OK, just caching dependencies"
+RUN mvn package || echo "OK, just caching dependencies"
 COPY . .
 RUN mvn package
 
