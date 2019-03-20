@@ -26,9 +26,10 @@ RUN apk add --no-cache zip
 
 COPY --from=maven-build /workspace/target/lib/io.quarkus.quarkus-kafka-client-runtime-*.jar /workspace/target/lib/
 
-RUN \
-  zip -d /workspace/target/lib/io.quarkus.quarkus-kafka-client-runtime-*.jar io/quarkus/kafka/client/runtime/graal/SubstituteSnappy.class && \
-  zip -d /workspace/target/lib/io.quarkus.quarkus-kafka-client-runtime-*.jar io/quarkus/kafka/client/runtime/graal/FixEnumAccess.class
+# https://github.com/Yolean/kafka-topics-copy/issues/4
+#RUN \
+#  zip -d /workspace/target/lib/io.quarkus.quarkus-kafka-client-runtime-*.jar io/quarkus/kafka/client/runtime/graal/SubstituteSnappy.class && \
+#  zip -d /workspace/target/lib/io.quarkus.quarkus-kafka-client-runtime-*.jar io/quarkus/kafka/client/runtime/graal/FixEnumAccess.class
 
 FROM oracle/graalvm-ce:1.0.0-rc14@sha256:ea22ec502d371af47524ceedbe6573caaa59d5143c2c122a46c8eedf40c961f0 \
   as native-build
