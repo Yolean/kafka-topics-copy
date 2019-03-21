@@ -1,2 +1,5 @@
 *
-!target/*-runner
+!src
+!pom.xml
+# in case we want to run `mvn package -Pnative -Dnative-image.docker-build=true` outside docker
+#!target/*-runner
