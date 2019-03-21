@@ -15,10 +15,21 @@ RUN mvn io.quarkus:quarkus-maven-plugin:0.12.0:create \
     -DclassName="org.acme.quickstart.GreetingResource" \
     -Dpath="/hello"
 COPY pom.xml .
-RUN mvn package
-RUN rm -r src target mvnw* && ls -l
+RUN mvn package && \
+  rm -r src target mvnw* && \
+  ls -l
 COPY . .
 RUN mvn -o package
+
+# Same as Yolean/kubernetes-kafka
+FROM solsson/jdk-opensource:11.0.2@sha256:9088fd8eff0920f6012e422cdcb67a590b2a6edbeae1ff0ca8e213e0d4260cf8 \
+  as runtime-plainjava
+
+WORKDIR /app
+COPY --from=maven-build /workspace/target/lib ./lib
+COPY --from=maven-build /workspace/target/*-runner.jar ./quarkus-kafka.jar
+
+ENTRYPOINT [ "java", "-cp", "./lib/*", "-jar", "./quarkus-kafka.jar" ]
 
 FROM alpine:3.9@sha256:644fcb1a676b5165371437feaa922943aaf7afcfa8bfee4472f6860aad1ef2a0 as snappy-mod
 
@@ -37,7 +48,7 @@ FROM oracle/graalvm-ce:1.0.0-rc14@sha256:ea22ec502d371af47524ceedbe6573caaa59d51
 WORKDIR /project
 COPY --from=maven-build /workspace/target/lib ./lib
 COPY --from=snappy-mod  /workspace/target/lib/* ./lib/
-COPY --from=maven-build /workspace/target/*.jar ./
+COPY --from=maven-build /workspace/target/*-runner.jar ./
 
 # from Quarkus' maven plugin mvn package -Pnative -Dnative-image.docker-build=true
 # but CollectionPolicy commented out due to "Error: policy com.oracle.svm.core.genscavenge.CollectionPolicy cannot be instantiated."

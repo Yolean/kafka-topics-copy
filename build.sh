@@ -23,3 +23,8 @@ docker build -f ./Dockerfile -t yolean/kafka-topics-copy:dev .
 build-contract
 docker tag yolean/kafka-topics-copy:dev yolean/kafka-topics-copy:latest
 docker push yolean/kafka-topics-copy:latest
+
+# Workaround for https://github.com/Yolean/kafka-topics-copy/issues/4
+# TODO add to build-contract
+docker build -f ./Dockerfile --target runtime-plainjava -t yolean/kafka-topics-copy:plainjava .
+docker push yolean/kafka-topics-copy:plainjava

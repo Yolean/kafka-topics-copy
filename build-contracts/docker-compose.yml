@@ -163,7 +163,7 @@ services:
       consumedT=$$(kafkacat -b destination-kafka:9092 -C -K '=' -t topic2 -p 0 -e -f '%T\n' | tail -n 1)
       echo "$$producedT <> $$consumedT ?" && [ "$$producedT" == "$$consumedT" ] || exit 2
       curl -s http://copy1:8080/metrics
-      # compression
+      # compression, BUT snappy here doesn't actually trigger https://github.com/Yolean/kafka-topics-copy/issues/4 so it must be flawed
       echo compression=gzip | kafkacat -b kafka:9092 -P -t topic1 -p 0 -K '=' -z gzip
       sleep 1
       curl -s http://copy1:8080/metrics
