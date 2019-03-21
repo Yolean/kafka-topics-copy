@@ -19,6 +19,7 @@ public class TopicsCopyOptionsEnv implements TopicsCopyOptions {
   public static final String ENV_NAME_TARGET_COMPRESSION = "TARGET_COMPRESSION";
   public static final String ENV_NAME_AUTO_OFFSET_RESET = "AUTO_OFFSET_RESET";
   public static final String ENV_NAME_PARTITION_PRESERVE = "PARTITION_PRESERVE";
+  public static final String ENV_NAME_EXIT_AFTER_IDLE_SECONDS = "EXIT_AFTER_IDLE_SECONDS";
   final String groupId;
   final String sourceBootstrap;
   final String targetBootstrap;
@@ -39,7 +40,8 @@ public class TopicsCopyOptionsEnv implements TopicsCopyOptions {
     this.targetCompression = env.containsKey(ENV_NAME_TARGET_COMPRESSION) ? CompressionType.forName(env.get(ENV_NAME_TARGET_COMPRESSION)) : defaults.getTargetCompression();
     this.sourceTopics = env.containsKey(ENV_NAME_SOURCE_TOPICS) ? Arrays.asList(env.get(ENV_NAME_SOURCE_TOPICS)) : defaults.getSourceTopics();
     this.autoOffsetReset = env.containsKey(ENV_NAME_AUTO_OFFSET_RESET) ? env.get(ENV_NAME_AUTO_OFFSET_RESET) : defaults.getAutoOffsetReset();
-    this.exitAfterIdleSeconds = defaults.getExitAfterIdleSeconds();
+    this.exitAfterIdleSeconds = env.containsKey(ENV_NAME_EXIT_AFTER_IDLE_SECONDS) ?
+        Integer.parseInt(env.get(ENV_NAME_EXIT_AFTER_IDLE_SECONDS)) : defaults.getExitAfterIdleSeconds();
     this.partitionPreserve = env.containsKey(ENV_NAME_PARTITION_PRESERVE) ? Boolean.parseBoolean(env.get(ENV_NAME_PARTITION_PRESERVE)) : defaults.getPartitionPreserve();
   }
 

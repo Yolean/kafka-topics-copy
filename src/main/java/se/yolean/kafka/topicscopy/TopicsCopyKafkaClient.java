@@ -97,6 +97,9 @@ public class TopicsCopyKafkaClient {
     RecordCopy recordCopy = new RecordCopy(options.getTargetTopic(), options.getPartitionPreserve());
 
     pollScheduler = new PollScheduler(subscribe, recordCopy);
+    if (options.getExitAfterIdleSeconds() > 0) {
+      pollScheduler.setMaxConsecutiveEmpty(options.getExitAfterIdleSeconds() / (int) POLL_DURATION.getSeconds());
+    }
     pollScheduler.again();
   }
 
@@ -126,13 +129,20 @@ public class TopicsCopyKafkaClient {
   class PollScheduler implements CopyStatusHandler {
 
     boolean keepPolling = true;
+    int consecutiveEmpty = 0;
 
     Subscribe subscribe;
     RecordCopy recordCopy;
+    private int maxConsecutiveEmpty = 0;
 
     public PollScheduler(Subscribe subscribe, RecordCopy recordCopy) {
       this.subscribe = subscribe;
       this.recordCopy = recordCopy;
+    }
+
+    PollScheduler setMaxConsecutiveEmpty(int numberOfPolls) {
+      this.maxConsecutiveEmpty  = numberOfPolls;
+      return this;
     }
 
     void stop() {
@@ -141,6 +151,10 @@ public class TopicsCopyKafkaClient {
     }
 
     void again() {
+      if (maxConsecutiveEmpty > 0 && consecutiveEmpty >= maxConsecutiveEmpty) {
+        logger.info("Had {} empty polls in a row. Exceeds idle setting. Aborting poll.", consecutiveEmpty);
+        keepPolling = false;
+      }
       if (keepPolling) {
         schedule(new CopyByPoll(subscribe, recordCopy)
             .setStatusHandler(this)
@@ -153,6 +167,7 @@ public class TopicsCopyKafkaClient {
     @Override
     public void polledEmpty() {
       consumerPolls.inc();
+      consecutiveEmpty++;
       again();
     }
 
@@ -160,6 +175,7 @@ public class TopicsCopyKafkaClient {
     public void copied(int count) {
       consumerPolls.inc();
       recordsCopied.inc(count);
+      consecutiveEmpty = 0;
       again();
     }
 

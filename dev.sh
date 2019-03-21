@@ -19,6 +19,7 @@ export SOURCE_TOPICS=topic1
 export TARGET_BOOTSTRAP=localhost:19192
 export TARGET_TOPIC=topic2
 export AUTO_OFFSET_RESET=latest
+export EXIT_AFTER_IDLE_SECONDS=5
 
 cat <<EOF
 

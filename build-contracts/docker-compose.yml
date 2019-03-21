@@ -130,6 +130,8 @@ services:
     - AUTO_OFFSET_RESET=latest
     # Required for tests below
     - PARTITION_PRESERVE=true
+    # Useful during manual testing
+    - EXIT_AFTER_IDLE_SECONDS=5
     ports:
     - 8080:8080
 
