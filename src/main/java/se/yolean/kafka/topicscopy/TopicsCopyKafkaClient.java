@@ -9,6 +9,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,6 +54,12 @@ public class TopicsCopyKafkaClient {
   @Inject
   Readiness readiness;
 
+  @Inject
+  TopicsCopyOptionsMicroProfileConfig options2;
+
+  @ConfigProperty(name = "ktc_transactional")
+  Boolean transactional;
+
   final ExecutorService thread = Executors.newSingleThreadExecutor();
 
   Shutdown shutdown = null;
@@ -63,6 +70,8 @@ public class TopicsCopyKafkaClient {
   }
 
   void onStart(@Observes StartupEvent ev) {
+    logger.info("Options 2: {} {}", options2.message, transactional);
+
     logger.info("Kafka topics copy starting with options {}", options);
 
     shutdown = new Shutdown();
