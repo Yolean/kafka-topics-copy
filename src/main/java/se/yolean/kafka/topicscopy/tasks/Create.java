@@ -32,7 +32,6 @@ public class Create implements Runnable {
     consumerProps.put(ConsumerConfig.GROUP_ID_CONFIG, options.getGroupId());
     consumerProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, options.getSourceBootstrap());
     consumerProps.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
-    consumerProps.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, "read_committed");
     consumerProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, ByteArrayDeserializer.class);
     consumerProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ByteArrayDeserializer.class);
     consumerProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, options.getAutoOffsetReset());
@@ -41,11 +40,7 @@ public class Create implements Runnable {
 
     Properties producerProps = new Properties();
     producerProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, options.getTargetBootstrap());
-    producerProps.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true");
-    // https://www.baeldung.com/kafka-exactly-once
-    // "All that we need to do is make sure the transaction id is distinct for each
-    // producer, though consistent across restarts."
-    producerProps.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, options.getGroupId() + "-tx1");
+    producerProps.put(ProducerConfig.ACKS_CONFIG, "all");
     producerProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class);
     producerProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class);
     producerProps.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, options.getTargetCompression().name);

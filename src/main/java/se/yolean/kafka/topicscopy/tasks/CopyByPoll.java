@@ -72,7 +72,7 @@ public class CopyByPoll implements Runnable {
     }
 
     try {
-      producer.beginTransaction();
+      // producer.beginTransaction();
 
       List<Future<RecordMetadata>> sent = new ArrayList<>(count);
       Iterator<ConsumerRecord<byte[], byte[]>> records = polled.iterator();
@@ -88,33 +88,25 @@ public class CopyByPoll implements Runnable {
         metadata.add(i, m);
       }
 
-      // https://hevodata.com/blog/kafka-exactly-once/, but what do we send for the cross-cluster mirror case?
-      // producer.sendOffsetsToTransaction(offsets, consumerGroupId);
-      producer.commitTransaction();
+      // producer.commitTransaction();
 
-      // https://www.baeldung.com/kafka-exactly-once says:
-      // Conversely, applications that must read and write to different Kafka clusters
-      // must use the older commitSync and commitAsync API. Typically, applications
-      // will store consumer offsets into their external state storage to maintain
-      // transactionality.
       consumer.commitSync();
 
       statusHandlers.forEach(h -> h.copied(count));
 
     } catch (ProducerFencedException e) {
-      // https://hevodata.com/blog/kafka-exactly-once/ doesn't abortTransaction here
       throw new RuntimeException("Unhandled", e);
     } catch (KafkaException e) {
-      producer.abortTransaction();
+      //producer.abortTransaction();
       throw new RuntimeException("Unhandled", e);
     } catch (InterruptedException e) {
-      producer.abortTransaction();
+      //producer.abortTransaction();
       throw new RuntimeException("Unhandled", e);
     } catch (ExecutionException e) {
-      producer.abortTransaction();
+      //producer.abortTransaction();
       throw new RuntimeException("Unhandled", e);
     } catch (TimeoutException e) {
-      producer.abortTransaction();
+      //producer.abortTransaction();
       throw new RuntimeException("Unhandled", e);
     }
   }

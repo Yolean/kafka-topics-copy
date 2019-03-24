@@ -18,7 +18,7 @@ public class Subscribe implements Runnable {
 
   @Override
   public void run() {
-    this.created.getProducer().initTransactions();
+    //this.created.getProducer().initTransactions();
 
     this.created.getConsumer().subscribe(sourceTopics);
   }
