@@ -1,29 +1,42 @@
-# [NOT WELL TESTED YET / USE ONLY FOR POC PURPOSES]
+# KTC
 
-This solution below may work for text based topics, but has limitations with delimiters for keys and messages.
-Do not use this project in production until this enhancement is performed: https://github.com/simplesteph/kafka-topics-copy/issues/6
+Copy/mirror kafka topics, as a microservice.
+Within a cluster or between clusters.
+Preserves message timestamps and headers.
+Optionally preserves partition.
 
-# [At your own risk] Kafka Topics Copy
+Unlike [MirrorMaker](https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=27846330)
+and [MirrorMaker 2](https://cwiki.apache.org/confluence/display/KAFKA/KIP-382%3A+MirrorMaker+2.0)
+this service is designed to be lightweight and runnable as a Kubernetes Job.
 
-Copy a Kafka Topic within the same Kafka Cluster. Useful for reducing the number of partitions for a topic.
-It keeps the keys of records, therefore ordering for a specific key is still guaranteed, even though the number of partitions is different.
+There's two major experiments here however:
+
+### Experiment 1: Using Quarkus for native executables
+
+We mean to mirror hundreds of topics using this service,
+so keeping the resource footprint low is worth some effort.
+Here we build a native executable from java source and use a distroless docker base for the image.
+
+Also we were curious if [Quarkus](https://quarkus.io/) could provide a pattern for our backend services.
+
+When the service has started and HTTP endpoints are up the service takes *around 3 MB memory*.
+That grows with kafka use though.
+
+### Experiment 2: Kafka exactly-once semantics
+
+The framework should be stable, but the [client code](src/main/java/se/yolean/kafka/topicscopy/tasks/CopyByPoll.java) here needs review, in particular WRT error handling.
 
 # Running
 
-```
-docker run --net=host \
-  -e SOURCE_TOPIC=source-topic \
-  -e TARGET_TOPIC=target-topic \
-  -e TARGET_PARTITIONS=3 \
-  -e TARGET_REPLICATION_FACTOR=1 \
-  -e ZOOKEEPER=localhost:2181 \
-  -e BOOTSTRAP_SERVERS=localhost:9092 \
-  -e KEY_DELIMITER="~" \
-  simplesteph/kafka-topics-copy
-```
+See the `copy1` service in [docker-compose.yml](./build-contracts/docker-compose.yml) for an example.
 
-# Roadmap / Improvements
+The only real documentation of config options is [where we read env](src/main/java/se/yolean/kafka/topicscopy/TopicsCopyOptionsEnv.java)
+and in the [Options interface](./src/main/java/se/yolean/kafka/topicscopy/TopicsCopyOptions.java).
 
- - Use group.id to track the replication (blocked by https://github.com/edenhill/kafkacat/issues/88 as -G option is not compatible with -e option)
- - Copy topic configuration as well.
- - Make it compatible with secured kafka cluster
+# Building
+
+See [build.sh](./build.sh).
+
+# Development
+
+See [dev.sh](./dev.sh). Wanted: hot-reload during development.
